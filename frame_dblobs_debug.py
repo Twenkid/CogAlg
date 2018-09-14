@@ -1,17 +1,37 @@
-mport cv2
+import cv2
 import argparse
 from time import time
 from collections import deque
 
-#@ Todor's additions, 11-12th Sep 2018, see scan_P : capturing an exception and recording the local variables (locals) in several points in the function.
-#@ I used copy.copy(...), simple = creates a pointer and all are printed as the same.
-#@ Separate files are used in order to ease comparison, e.g. with WinMerge
+#@ Todor's additions, 11-12th Sep 18, see scan_P + 14-15 Sep
 import copy #@
+import sys #@
 global errors #@
 global sequence #@
 errors = [] #@
 sequence = ["call", "preLoop", "prefork005"] #@ labels for the locals-states
 
+# Manually alter variables after an exception and print selectively or execute any python code.  #@ 14-9-2018
+def Console(vars, keypoint): # vars is the dictionary with saved states, keypoing is one of "sequence"
+  #global sequence
+  localVars = copy.copy(vars[keypoint]) #such as "preforkoo5"
+  globalVars = globals()
+  currentLocals = locals()
+  for k in localVars: #keys
+    print(k)
+    if k not in currentLocals:
+      currentLocals[k] = localVars[k]  # The local dictionary is for the function Console, it doesn't "remember" scan_P's variables
+  while(True): 
+    try:
+      block = input("Enter python line (Ctrl-C for exit)... ") #code block could be as long as it takes - this could be extended with a GUI
+      exec(block, locals(), globals()) # Executes general python code given the execution context of local and global variables
+                                      # Actually it could be executed directly on the saved states as well, without copying to current locals
+                                      # However the saved states may be better to be kept, for rolling back after messing up with the REPL.
+      print("===="); print("Directly over the saved states")
+      exec(block, localVars, localVars)
+    except Exception as e:
+      print(e)
+      print(sys.exc_info())
 
 '''   
     frame() is my core algorithm of levels 1 + 2, modified for 2D: segmentation of image into blobs, then search within and between blobs.
@@ -198,17 +218,20 @@ def scan_P_(x, P, P_, _buff_, _P_, frame):  # P scans shared-x-coordinate _Ps in
                             root_fork = root_.pop()  # ref to referring fork, verify?
                             root_fork.append(blob_seg)  # fork binding, no convert to tuple: forms a new object?
             except Exception as e: #@
+                bPrintAndSaveStates = False
                 print(e); errors.append(e);
                 print(sequence)
-                import re  #Regular expressions for adding new lines, otherwise it hurts the average text editors due to endless lines
-                for label in sequence:  #Separate files for each point where the locals are sampled: allows easier comparison
-                    s = str(localVars[label])
-                    log = open(label + ".txt", "wt")
-                    s = re.sub("('\w+)'", "\\r\\n\g<1>", s)  # Add new lines before identifiers
-                    s = re.sub(",\s\(", ",\\r\\n (", s)  # Add new lines before the beginning of a tuple
-                    print(s)
-                    log.write(s)
-                    log.close()
+                if (bPrintAndSaveStates):
+                  import re  #Regular expressions for adding new lines, otherwise it hurts the average text editors due to endless lines
+                  for label in sequence:  #Separate files for each point where the locals are sampled: allows easier comparison
+                      s = str(localVars[label])
+                      log = open(label + ".txt", "wt")
+                      s = re.sub("('\w+)'", "\\r\\n\g<1>", s)  # Add new lines before identifiers
+                      s = re.sub(",\s\(", ",\\r\\n (", s)  # Add new lines before the beginning of a tuple
+                      print(s)
+                      log.write(s)
+                      log.close()
+                Console(localVars, "prefork005")  # 14-9-2018
                 exit(0) #Exit program
                 # For simple and easy comparison of the result files I suggest WinMerge:
                 # https://sourceforge.net/projects/winmerge/
