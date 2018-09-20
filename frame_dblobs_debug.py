@@ -4,11 +4,15 @@ from time import time
 from collections import deque
 
 #@ 20-9-2018 - Note that modifying locals() directly is not allowed in Py 3. It works only for reading, not writing. 
-#@ It's not used here, either. Exec() is supposed to work, though, but for keeping the changes it probably should be:
-#@  1. Storing the command lines
+#@ It's not used here, either. After a research on stak overflow, it seems that Exec() is supposed to work, however it would change
+#@ the actual local variables only in Python 2, because exec was a statement there and it is a function in 3.
+#@ For Python 2:
+#@  1. Store the command lines
 #@  2. When returning to the calling functions, calling exec() again with the same commands, which would update their locals.
 #@  Just inserting an "exec" section could do the job without additional functions for simple tasks.
-#
+#@ For 3 thought the sugestion is to use explicit dictionaries for the variables which are to be fed to exec and then with the functions.
+#@
+#@
 #@ Writing back could be done with exec when back in the original function? but that may require additional
 #@ analysis of the content of the stored local() dictionary.
 #@ The suggestion is to put the vars in a dictionary, but this is a syntax overhead.
