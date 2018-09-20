@@ -3,6 +3,10 @@ import argparse
 from time import time
 from collections import deque
 
+#@ 20-9-2018 - Modifying locals() doesn't work. It works only for reading, inspection, not writing. 
+#@ Writing back could be done with exec when back in the original function? but that may require additional
+#@ analysis of the content of the stored local() dictionary.
+#@ The suggestion is to put the vars in a dictionary, but this is a syntax overhead.
 #@ Todor's additions, 11-12th Sep 18, see scan_P + 14-15 Sep
 import copy #@
 import sys #@
@@ -28,7 +32,7 @@ def Console(vars, keypoint): # vars is the dictionary with saved states, keypoin
                                       # Actually it could be executed directly on the saved states as well, without copying to current locals
                                       # However the saved states may be better to be kept, for rolling back after messing up with the REPL.
       print("===="); print("Directly over the saved states")
-      exec(block, localVars, localVars)
+      exec(block, localVars, globals())
     except Exception as e:
       print(e)
       print(sys.exc_info())
