@@ -3,7 +3,12 @@ import argparse
 from time import time
 from collections import deque
 
-#@ 20-9-2018 - Modifying locals() doesn't work. It works only for reading, inspection, not writing. 
+#@ 20-9-2018 - Note that modifying locals() directly is not allowed in Py 3. It works only for reading, not writing. 
+#@ It's not used here, either. Exec() is supposed to work, though, but for keeping the changes it probably should be:
+#@  1. Storing the command lines
+#@  2. When returning to the calling functions, calling exec() again with the same commands, which would update their locals.
+#@  Just inserting an "exec" section could do the job without additional functions for simple tasks.
+#
 #@ Writing back could be done with exec when back in the original function? but that may require additional
 #@ analysis of the content of the stored local() dictionary.
 #@ The suggestion is to put the vars in a dictionary, but this is a syntax overhead.
