@@ -16,13 +16,16 @@ too many values to unpack (expected 7)
   File "f3.py", line 309, in form_blob
     (s, Ls, Is, Ds, Dys, Vs, Vys), Py_, x, xd, root, fork_ = seg  # s, root are ignored
 ForkLog 6768
-```
+
 
 The last logged line is that branch:
 
 6767: if roots == 0 id=2109825995208,x=1024,_x=1019, y=410 _fork_=#>0#
 
 That's out of bounds (1023)?
+
+
+'''
 
 
 '''   
