@@ -2,7 +2,7 @@
 # unfold_blob Python semantics test
 # https://github.com/khanh93vn/CogAlg/blob/master/frame_2D_alg/intra_comp.py
 # You shouldn't remove elements from a list while traversing it with for ... in? (Or in general don't modify it in place)
-# It is changing the structure and it seems that elements are skipped
+# It is changing the structure and it seems that elements are skipped. Notice the number of iterations in seg1.
 # Maybe because the length of the structure gets shorter than
 # as was expected during the initalization of the iteration and 
 # some elements are skipped.
@@ -12,7 +12,7 @@
 '''
   Code under test:
 
-      P_ = []                             # buffer for Ps at line y
+        P_ = []                             # buffer for Ps at line y
         for seg in seg_:
             if y < seg[0] + seg[1][0]:      # y < y0 + Ly (y within segment):
 
@@ -29,15 +29,17 @@ def seg1(): #as done in unfold_blob ... https://github.com/khanh93vn/CogAlg/blob
     print("Append to P[]    if < 2")
     print("Remove from seg_ if >= 2")    
     print(seg_)
-
+    i = 1
     for seg in seg_:
-       x,y,z = seg   
+       print(i, seg_) 
+       x,y,z = seg             
        if x < 2:
          print("O", seg)
          P_.append(seg)
        else:
          print("X", seg)
          seg_.remove(seg)
+       i+=1
 
     print("seg_", seg_)
     print("P_", P_)
@@ -54,6 +56,7 @@ def seg2():
     print(seg_)
 
     for seg in seg_:
+       print(seg_)       
        x,y,z = seg   
        if x > 2:
          print("O", seg)
@@ -76,7 +79,7 @@ def seg3(): #Separate traversals
     seg_ = [a,b,c,d]
     print(seg_)
 
-    for seg in seg_:
+    for seg in seg_:       
        x,y,z = seg   
        if x > 2:
          print("O", seg)
