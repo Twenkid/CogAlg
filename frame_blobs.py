@@ -12,6 +12,7 @@ from collections import deque, namedtuple
 import numpy as np
 import cv2  #Todor
 
+# 13.6.2019
 # Todor's modifications for visualisation of the Blobs in color
 # Added:
 # Collecting blob's on termination in a simple container with:
