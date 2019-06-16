@@ -1,3 +1,8 @@
+# This repository
+
+Experiments, variations, data on CogAlg
+
+
 CogAlg
 ======
 
