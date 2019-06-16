@@ -6,27 +6,33 @@
 # -form_seg_()
 # -form_blob()
 # ***********************************************************************************************************************
+import cv2  # Todor
+import numpy as np
+from collections import deque, namedtuple
 from scipy import misc
 from time import time
-from collections import deque, namedtuple
-import numpy as np
-import cv2  #Todor
 
-# 13.6.2019
-# Todor's modifications for visualisation of the Blobs in color
+
+# Todor's modifications for visualisation of the Blobs in color, 6.2019
 # Added:
 # Collecting blob's on termination in a simple container with:
-# global id, blob = [], ave = 25
+# global id, blob = [], ave = 25 ... ~50 for bilateral
 # OpenCV
 # Rendering
 # ave = 25
-# Best run from cmd line: python frame_blobs.py
+# + Example of single-side (unilateral) comparison, adjust comp_pixel
+# + ave adjustments
+# Timing tests, see github - hypot here is practically not more expensive than other comp
+
 
 def image_to_blobs(image):  # root function, postfix '_' denotes array vs element, prefix '_' denotes higher- vs lower- line variable
 
     frame = [[0, 0, 0, 0], [], image.shape]  # params, blob_, shape
     dert__ = comp_pixel(image)  # vertically and horizontally bilateral comparison of adjacent pixels
     seg_ = deque()  # buffer of running segments
+    global start_time
+    t = time() - start_time
+    print("bofre y in range...", t)
 
     for y in range(1, height - 1):  # first and last row are discarded
         P_ = form_P_(dert__[y])  # horizontal clustering
@@ -43,9 +49,28 @@ def comp_pixel(p__):  # bilateral comparison between vertically and horizontally
 
     dert__ = np.empty(shape=(height, width, 4), dtype=int)  # initialize dert__
 
-    dy__ = p__[2:, 1:-1] - p__[:-2, 1:-1]  # vertical comp between rows, first and last column are discarded
-    dx__ = p__[1:-1, 2:] - p__[1:-1, :-2]  # lateral comp between columns, first and last row are discarded
-    g__ = np.abs(dy__) + np.abs(dx__) - ave  # deviation of gradient, initially approximated as |dy| + |dx|
+
+    #dy__ = p__[2:, 1:-1] - p__[:-2, 1:-1]  # vertical comp between rows, first and last column are discarded
+    #dx__ = p__[1:-1, 2:] - p__[1:-1, :-2]  # lateral comp between columns, first and last row are discarded
+
+
+    dx1 = p__[1:-1, 0:-2]
+    dx2 = p__[1:-1, 1:-1]  # lateral comp between columns, first and last row are discarded
+    #print(dx1.shape)
+    #print(dx2.shape)
+    dx__ = dx2-dx1
+
+
+    dy1 = p__[0:-2, 1:-1]
+    dy2 = p__[1:-1, 1:-1]
+    dy__ = dy2 - dy1;
+
+
+    #dy__ = p__[1:-1, 1:-1] - p__[1:-1, 1:-1]  # vertical comp between rows, first and last column are discarded
+    #dx__ = p__[1:-1, 1:-1] - p__[1:-1, 1:-1]  # lateral comp between columns, first and last row are discarded
+
+    #g__ = np.abs(dy__) + np.abs(dx__) - ave  # deviation of gradient, initially approximated as |dy| + |dx|
+    g__ = np.hypot(dy__, dx__) - ave  # deviation of gradient, initially approximated as |dy| + |dx|
 
     dert__[:, :, 0] = p__
     dert__[1:-1, 1:-1, 1] = g__
@@ -236,17 +261,20 @@ def form_blob(term_seg, frame):  # terminated segment is merged into continued o
 
         #Collection for display
         blobs.append([id, (y0, yn, x0, xn), seg_])
-        print("terminate form_blob", id)
+        #if (id%500==0): print("terminate form_blob", id)
         id+=1
 
     # ---------- form_blob() end ----------------------------------------------------------------------------------------
 
 # ************ PROGRAM BODY *********************************************************************************************
 
-ave = 25
+ave = 25 #12 #25 #50
+
+adjust = 1.0 #1.5 #2
+
+ave *= adjust #*2 for bilateral comp
 DEBUG = True
 blobs = [] #collected terminated blobs
-path = 'D:\\Cog\\sc.png' #Adjust path to local or whatever
 
 # Load inputs --------------------------------------------------------------------
 # image = misc.imread('./../images/raccoon_eye.jpg', flatten=True).astype(int)  # will not be supported by future versions of scipy
@@ -258,16 +286,26 @@ path = 'D:\\Cog\\sc.png' #Adjust path to local or whatever
 #image = cv2.imread('D:/Cog/raccoon.jpg',0).astype(int)
 #image = cv2.imread('D:\\Cog\\sc.png',0).astype(int)
 
-image = cv2.imread('D:\\Cog\\sc.png',1).astype(int)
+path = 'D:\\Cog\\sc.png'
+path = 'D:\\Cog\\raccoon.jpg'
+color = 1 #0 for grayscale
+
+#image = cv2.imread('D:\\Cog\\sc.png',1).astype(int)
+image = cv2.imread(path,1).astype(int)
 b,g,r = cv2.split(image)
 channel = b
 
+if (color==0): image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-imageShow = cv2.imread(path, 1) #Images for display - int format is not appropriate
+#imageShow = cv2.imread('D:\\Cog\\sc.png',1) #Images for display - int format is not appropriate
+
+imageShow = cv2.imread(path,1) #Images for display - int format is not appropriate
 bs,gs,rs = cv2.split(imageShow)
 result =  imageShow #np.empty_like(imageShow) #imageShow.copy()
 cv2.imshow("source", imageShow) #color
-cv2.imshow("b", bs)  #Take the blue channel
+
+if (color): cv2.imshow("b", bs)  #Take the blue channel
+else: cv2.imshow("grayscale", imageShow) #color
 
 cv2.waitKey(2000)
 
@@ -288,6 +326,11 @@ id = 0
 #frame_of_blobs = image_to_blobs(image)
 frame_of_blobs = image_to_blobs(channel)
 
+end_time = time() - start_time
+print(end_time)
+
+print("Terminated blobs", id)
+
 r1 = 50; g1 = 0;  b1 = 0;
 r0 = 0; g0 = 0; b0 = 50
 cv2.line(result, (0, 0), (200, 200), (255, 255, 255), 1)
@@ -302,7 +345,7 @@ for b in blobs:
         #print(seg)
         #y, [I, G, Dy, Dx, L, Ly], Py_, _, _ = seg
         y, _, Py_, _, _ = seg
-        print(y)
+        #print(y)
         for P in Py_:
             #print(P)
             #s, x0, I, G, Dy, Dx, L, dert_ = P
@@ -323,8 +366,7 @@ for b in blobs:
             y+=1;
 
 cv2.imshow("blobs", result)
-#cv2.imwrite("E:\\blobs_cogalg.png", result)
-cv2.imwrite("blobs_cogalg.png", result)
+cv2.imwrite("E:\\blobs_cogalg.png", result)
 cv2.waitKey(0)
 # from intra_blob_debug import intra_blob_hypot  # not yet functional, comment-out to run
 # frame_of_blobs = intra_blob_hypot(frame_of_blobs)  # evaluate for deeper clustering inside each blob, recursively
