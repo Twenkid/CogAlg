@@ -1,0 +1,76 @@
+#26-5-2017 ... to B.K. ...
+Todor Arnaudov:
+
+Also, I may have mentioned this, an idea about a "natural" incremental raster that is rather radial with more adjacent directions and with gradually diminishing effect/weight.
+
+If not many-directions, for example hexagons: https://gis.stackexchange.com/questions/82362/what-are-the-benefits-of-hexagonal-sampling-polygons
+
+The radial raster may be generated as mapping from the standard square/rectangular raster, and resampled when visualized.
+
+An advantage of the radial representation is that all adjacent pixels are at the same distance to the central one ("the focus"), thus the diagonal artifacts/irregularity of the 3x3 raster quadrants are eliminated.
+
+Also, that assists in the more natural (to me) initial incremental scanning to all six  directions (without diagonal artifact) and there would be 6 smooth 1D.
+
+The horizontal/vertical dimensions (lines) get discovered as they are met most often, fit more cheaply during the mapping and as a part of the "orthogonality", which is a specific property of vectors > 1D.
+
+##
+
+
+
+B.K. "One that did was that initial patterns should defined by 2D gradient, simply because average match is equal in both dimensions. 
+Actually, this just justification is mine, his was intuitive. That's a deviation from core algorithm, but makes sense for images. 
+So, I am revising level 1 into a mixture of 1D and 2D, starts from "or": https://docs.google.com/document/d/1GElEvTlwwshZl1Z8KYetMoCPGxfJzq7zKC8G2rll160/edit?usp=sharing
+Levels 2 and above would have to be redefined too."
+
+T.A.:
+
+Good that you're exploring different paths. As of the dimensions (I may have shared these thoughts, not sure): 
+
+
+Have you considered radial sampling - hexagons or higher resolution circle of pixels: 
+
+https://gis.stackexchange.com/questions/82362/what-are-the-benefits-of-hexagonal-sampling-polygons 
+
+As of being "incremental", such representation provides equal distance between the focus/central pixel and all its neighbors, while in the rectangular raster there's a diagonal artifact.
+
+{
+
+  Although for rect. sampling in image processing that's compensated with appropriate coefficients/longer distance for the diagonal for the convolution kernels as for gaussian blur. 
+
+  http://dev.theomader.com/gaussian-kernel-calculator/
+  https://en.wikipedia.org/wiki/Gaussian_filter
+
+}
+
+It shouldn't matter in the long run of the algorithm and for resolutions which are high enough, however conceptually equal distances seem more "natural".
+(For lines in-between two hexagons - it's 0.5*A1 + 0.5*A2.
+
+Also, it is incremental if the algorithm searches for dimensions in "rays" (it doesn't know that the input is 2D) and eventually converges/selects horizontal/vertical scanlines due to the patterns in the input and with the discovery of "orthogonality", a property of 2D vectors.
+
+In a RECT Cartesian coordinate system, orthogonality is built in.
+
+
+ 
+
+
+More importantly, I need to formalize level 4 feedback, especially coordinate feedback, to re-define the whole process on it's own. 
+That should make the algorithm "self-modifying", and then it's just a matter of cycles.
+Still, the first 4 levels must be defined manually.  
+
+
+#
++
+Regarding compression ration, initially there might be losses
+
+BK.
+
+Radial growth?
+
+##
+
+30-5-2017:
+
+?
+
+I also think that initially regions  have more material for locally-emerging unsupervised processing for a general case (a variety of "patterns", forming "spectra"). For one single central input or quadrant gradient/or 3x3 region there's no spectrum and "everything is a pattern".  
+
