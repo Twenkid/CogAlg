@@ -1,0 +1,27 @@
+#8-6-2017 ...  https://github.com/boris-kz/CogAlg/pull/1#issuecomment-306961921
+@aloschilov 
+#1
+
+All working notation would work, but for the users it's better if it's more supportive and suggestive why it's like it is.
+
+IMO there should be a more "visual"/graphical (connected) representation of the algorithm,  (graphs/different kinds of diagrams, schemes, sequence diagrams, some kind of time diagrams, call graphs https://en.wikipedia.org/wiki/Call_graph) that can be also edited with some kind of an IDE: like pointing the previous pixel, drawing/scrolling a range, setting constraints for generation of a new variable, connecting existing variables/setting a correlation (a subspace, a node, ...).
+
+All these have to be addressable separately, different views to be easily available, then the results from the algorithm - too. 
+
+At best it should be obvious why particular decision are taken, what were some of the alternatives at that given point and why the other decision was better. For now it's like "it's doing this, this, this, this, this", but with a little or no"why".
+
+That representation should be convertible/to get mapped to code, possibly by code generation, and not just code-editing without more easier to grasp representation.
+
+It should allow also alternative variable names (long and short), generation to different languages (since it needs library only to read the input).
+
+####
+
+#2017
+@aloschilov 
+>Interesting discussion. In context of OOP, I would say that for algorithms it is hardly a good match.
+
+I generally suggest a different more "visible" notation (definition) with graphs/diagrams/flowcharts/call graphs/illustrations, and at least structures to limit "the structures" if they are fixed and there's no code generation/added variables.
+
+
+and more suggestive identifiers. This style with small-capital-underscore-one-two-letters is putting a heavy cognitive burden given the amount of parameters and the span where these variables are applied.
+
