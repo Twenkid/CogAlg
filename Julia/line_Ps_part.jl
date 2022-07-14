@@ -25,6 +25,10 @@
 # Twenkid's tests on Windows and timing, v. 14.7.2022
 #  Timed with  @btime include("T:\\line_form_P_fix.jl")
 #  404.579 ms (1902926 allocations: 138.43 MiB)  404-424 ms for raccoon.jpg
+# After unloading the PC: down to 362 ms
+#  using BenchmarkTools
+# julia> @btime include("T:\\line_Ps_part.jl")
+#  362.416 ms (1902182 allocations: 138.39 MiB)
 
 using Images, ImageView, CSV
 #, Dates
