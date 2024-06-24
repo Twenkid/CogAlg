@@ -71,8 +71,8 @@ def ycomp(t_, _t_, fd, fv, _x, y, X, Y, r, a, vP_, dP_, _vP_, _dP_,
             if y > 1:  # comb_P() or separate comb_vP() and comb_dP()?
 
                vP = pri_s, I, D, Dy, M, My, Vq, p_, olp, olp_  # M vs V: eval per quadrant, V = M - 2a * W?
-               i_vPP, _P_, next_P_ = comb_P(vP, len(vP_), _vP_, r, A, _x, x, y, Y, _P_, next_P_)
-               vP = vP, i_vPP
+               n_vPP, _P_, next_P_ = comb_P(P=vP, nP = len(vP_), _P_ = _vP_, r, A, _x, x, y, Y, _P_, next_P_) #n_vPP instead of i_vPP
+               vP = vP, n_vPP
                vP_.append(vP)  # vP includes index of its vPP, formed by comb_P
 
             o = len(vP_), olp  # len(vP_) is index of current vP, olp formed by comb_P()
@@ -96,9 +96,9 @@ def ycomp(t_, _t_, fd, fv, _x, y, X, Y, r, a, vP_, dP_, _vP_, _dP_,
 
             if y > 1:  # comb_P() or separate comb_vP() and comb_dP()?
 
-               dP = pri_sd, Id, Dd, Ddy, Md, Mdy, Dq, d_, dolp, dolp_
-               i_dPP, _P_, next_P_ = comb_P(dP, len(dP_), _dP_, r, A, _x, x, y, Y, _P_, next_P_)
-               dP = dP, i_dPP
+               dP = pri_sd, Id, Dd, Ddy, Md, Mdy, Dq, d_, dolp, dolp_ #Id is not defined?
+               n_dPP, _P_, next_P_ = comb_P(P = dP, nP = len(dP_),  _P_ =_dP_, r, A, _x, x, y, Y, _P_, next_P_) #n_dPP not to confuse with "input"
+               dP = dP, n_dPP
                dP_.append(dP)  # dP includes index of its dPP, formed by comb_P
 
             o = len(dP_), dolp  # len(dP_) is index of current dP, dolp formed by comb_P()
