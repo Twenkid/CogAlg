@@ -1,5 +1,7 @@
 ## See Twenkid's SuperCogAlg for some meta-... and Pre-Meta-CogAlg (2010s work but not published yet)
 
+https://github.com/Twenkid/SuperCogAlg/
+
 # This repository by Twenkid
 
 Experiments, variations, data on CogAlg
