@@ -1,3 +1,5 @@
+# See Twenkid's SuperCogAlg and Pre-Meta-CogAlg (2010s work but not published yet)
+
 # This repository
 
 Experiments, variations, data on CogAlg
