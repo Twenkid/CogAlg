@@ -2,7 +2,7 @@
 
 https://github.com/Twenkid/SuperCogAlg/
 
-# This repository by Twenkid
+## In this repository/fork by Twenkid
 
 Experiments, variations, data on CogAlg
 
