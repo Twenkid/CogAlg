@@ -1,6 +1,6 @@
-# See Twenkid's SuperCogAlg and Pre-Meta-CogAlg (2010s work but not published yet)
+## See Twenkid's SuperCogAlg for some meta-... and Pre-Meta-CogAlg (2010s work but not published yet)
 
-# This repository
+# This repository by Twenkid
 
 Experiments, variations, data on CogAlg
 
@@ -9,6 +9,8 @@ CogAlg
 ======
 
 Full introduction: www.cognitivealgorithm.info
+
+(...) 
 
 Proposed algorithm is a clean design for deep learning: non-neuromorphic, sub-statistical, comparison-first. It is derived from my definitions: pattern is a span of matching inputs and match is partial overlap between these inputs, defined by comparisons in hierarchically selective search. This search is strictly incremental, primarily in the distance between comparands and then in their derivation by prior comparisons. That means operations should be unique for each level of search and feedback, hence a singular in “cognitive algorithm“.
 
